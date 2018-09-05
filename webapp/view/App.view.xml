@@ -1,0 +1,138 @@
+<!--<mvc:View controllerName="sap.ui.app.DataBding.DataBinding.controller.App" xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+	<App id="idAppControl">
+		<pages>
+			<Page title="{i18n>title}">
+				<content></content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>-->
+<!--Step 4: Two-Way Data Binding
+In the examples used so far, we have used a read-only field to display the value of a model property. 
+We will now change the user interface so that the first and last name fields are displayed using sap.m.
+Input fields and an additional check box control is used to enable or disable both input fields. 
+This arrangement illustrates a feature known as "two-way data binding". 
+Now that the view contains more controls, we will also move the view definition into an XML file.
+-->
+<!--<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc">
+  <Panel headerText="{/panelHeaderText}" class="sapUiResponsiveMargin" width="auto">
+    <content>
+      <Label text="First Name" class="sapUiSmallMargin" />
+      <Input value="{/firstName}" valueLiveUpdate="true" width="200px" enabled="{/enabled}" />
+      <Label text="Last Name" class="sapUiSmallMargin" />
+      <Input value="{/lastName}" valueLiveUpdate="true" width="200px" enabled="{/enabled}" />
+      <CheckBox selected="{/enabled}" text="Enabled" />
+    </content>
+  </Panel>
+</mvc:View>-->
+
+<!--Step 6: Resource Models
+Business applications also require language-specific (translatable) texts used as 
+labels and descriptions on the user interface.-->
+<!--Step 8: Binding Paths: Accessing Properties in Hierarchically Structured Models    xmlns:l="sap.ui.layout"-->
+<mvc:View xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:mvc="sap.ui.core.mvc"
+controllerName="sap.ui.app.DataBding.DataBinding.controller.App" 
+	>
+  <Panel headerText="{i18n>panelHeaderText}" class="sapUiResponsiveMargin" width="auto">
+    <content>
+      <Label text="{i18n>firstName}" class="sapUiSmallMargin" />
+      <Input value="{/firstName}" valueLiveUpdate="true" width="200px" enabled="{/enabled}" />
+      <Label text="{i18n>lastName}" class="sapUiSmallMargin" />
+      <Input value="{/lastName}" valueLiveUpdate="true" width="200px" enabled="{/enabled}" />
+      <CheckBox selected="{/enabled}" text="{i18n>enabled}" />
+    </content>
+  </Panel>
+<!--Step 8: Binding Paths: Accessing Properties in Hierarchically Structured Models -->
+  <Panel headerText="{i18n>panel2HeaderText}" class="sapUiResponsiveMargin" width="auto">
+    <content>
+      	<l:VerticalLayout>
+          <Label class="sapUiSmallMargin" text="{i18n>address}:" />
+          <Text class="sapUiSmallMarginBegin sapUiSmallMarginBottom" 
+                text="{/address/street}\n{/address/zip} {/address/city}\n{/address/country}" 
+                width="200px" />
+				<Link class="sapUiSmallMarginBegin"
+						href="{
+								parts: [
+									'/firstName',
+									'/lastName'
+								],
+								formatter: '.formatMail'
+							}"
+						text="{i18n>sendEmail}"/>                
+                
+        </l:VerticalLayout>   
+		<l:VerticalLayout>
+						<Label text="{i18n>salesToDate}:" class="sapUiSmallMargin" />
+						<Input width="200px" enabled="{/enabled}" description="{/currencyCode}"
+							   value="{ parts: [{path: '/salesToDate'}, {path: '/currencyCode'}], 
+							   type: 'sap.ui.model.type.Currency', 
+							   formatOptions: {showMeasure: false } }"/>
+					</l:VerticalLayout>        
+    </content>
+  </Panel>  
+<!--step 12 below  -->
+<Panel headerText="{i18n>panel3HeaderText}" class="sapUiResponsiveMargin" width="auto">
+	<content>
+<!--Step 15: Aggregation Binding Using a Factory Function
+Instead of hard-coding a single template control, we use a factory function to generate different 
+controls based on the data received at runtime. This approach is much more flexible and allows complex or 
+heterogeneous data to be displayed.-->
+<List id="ProductList" headerText="{i18n>productListTitle}" items="{
+				path: 'products>/Products',
+				factory: '.productListFactory'
+			}" /> 	
+<!--		<List headerText="{i18n>productListTitle}" items="{products>/Products}">
+			<items>
+				<ObjectListItem 
+				  press=".onItemSelected"  
+		    	  type="Active"
+				title="{products>ProductName}"
+								number="{	parts:
+												[
+													{path: 'products>UnitPrice'},
+													{path: '/currencyCode'}
+												],
+											type: 'sap.ui.model.type.Currency',
+											formatOptions: { showMeasure: false }
+										}"
+								numberUnit="{/currencyCode}"
+								numberState="{= ${products>UnitPrice}  > ${/priceThreshold} ? 'Error' : 'Success' }">
+					<attributes>
+						<ObjectAttribute text="{products>QuantityPerUnit}"/>
+						<ObjectAttribute title="{i18n>stockValue}"
+										 text="{parts: [
+										 			{path: 'products>UnitPrice'},
+										 			{path: 'products>UnitsInStock'},
+										 			{path: '/currencyCode'}
+										 			],
+												formatter: '.formatStockValue'
+												}" />
+					</attributes>
+				</ObjectListItem>
+			</items>
+		</List>-->
+	</content>
+</Panel>  
+  <Panel id="productDetailsPanel" headerText="{i18n>panel4HeaderText}" class="sapUiResponsiveMargin" width="auto">
+    <l:Grid defaultSpan="L3 M6 S12" containerQuery="true">
+        <Label text="{i18n>ProductID}:" />
+        <Input value="{products>ProductID}" />
+        
+        <Label text="{i18n>ProductName}:" />
+        <Input value="{products>ProductName}" />
+
+        <Label text="{i18n>QuantityPerUnit}:" />
+        <Input value="{products>QuantityPerUnit}" />
+        
+        <Label text="{i18n>UnitPrice}:" />
+        <Input value="{products>UnitPrice}" />
+        
+        <Label text="{i18n>UnitsInStock}:" />
+        <Input value="{products>UnitsInStock}" />
+        
+        <Label text="{i18n>Discontinued}:" />
+        <CheckBox selected="{products>Discontinued}" />
+    </l:Grid>    
+  </Panel>
+</mvc:View>
